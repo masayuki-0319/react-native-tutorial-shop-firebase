@@ -33,7 +33,7 @@ exports.onUpdateUser = functions
 
 exports.onWriteReview = functions
   .region('asia-northeast1')
-  .firestore.document('shops/{shopId}/reviews/{reviewId')
+  .firestore.document('shops/{shopId}/reviews/{reviewId}')
   .onWrite(async (change, context) => {
     const { shopId } = context.params;
     const review = change.after.data() as Review;
