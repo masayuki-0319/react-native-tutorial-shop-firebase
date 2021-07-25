@@ -45,17 +45,16 @@ exports.onWriteReview = functions
       const shop = shopDoc.data() as Shop;
 
       let { score1 = 0, score2 = 0, score3 = 0, score4 = 0, score5 = 0 } = shop;
-      switch (review.score) {
-        case 1:
-          score1 += 1;
-        case 2:
-          score2 += 2;
-        case 3:
-          score3 += 3;
-        case 4:
-          score4 += 4;
-        case 5:
-          score5 += 5;
+      if (review.score === 1) {
+        score1 += 1;
+      } else if (review.score === 2) {
+        score2 += 1;
+      } else if (review.score === 3) {
+        score3 += 1;
+      } else if (review.score === 4) {
+        score4 += 1;
+      } else if (review.score === 5) {
+        score5 += 1;
       }
       let aveScore =
         (score1 * 1 + score2 * 2 + score3 * 3 + score4 * 4 + score5 * 5) /
@@ -63,32 +62,36 @@ exports.onWriteReview = functions
       aveScore = Math.round(aveScore * 100) / 100;
 
       let params = {};
-      switch (review.score) {
-        case 1:
-          params = {
-            score1: admin.firestore.FieldValue.increment(1),
-            score: aveScore,
-          };
-        case 2:
-          params = {
-            score2: admin.firestore.FieldValue.increment(1),
-            score: aveScore,
-          };
-        case 3:
-          params = {
-            score3: admin.firestore.FieldValue.increment(1),
-            score: aveScore,
-          };
-        case 4:
-          params = {
-            score4: admin.firestore.FieldValue.increment(1),
-            score: aveScore,
-          };
-        case 5:
-          params = {
-            score5: admin.firestore.FieldValue.increment(1),
-            score: aveScore,
-          };
+      if (review.score === 1) {
+        params = {
+          score1: admin.firestore.FieldValue.increment(1),
+          score: aveScore,
+        };
+      } else if (review.score === 2) {
+        params = {
+          score2: admin.firestore.FieldValue.increment(1),
+          score: aveScore,
+        };
+      } else if (review.score === 3) {
+        params = {
+          score3: admin.firestore.FieldValue.increment(1),
+          score: aveScore,
+        };
+      } else if (review.score === 3) {
+        params = {
+          score3: admin.firestore.FieldValue.increment(1),
+          score: aveScore,
+        };
+      } else if (review.score === 4) {
+        params = {
+          score4: admin.firestore.FieldValue.increment(1),
+          score: aveScore,
+        };
+      } else if (review.score === 5) {
+        params = {
+          score5: admin.firestore.FieldValue.increment(1),
+          score: aveScore,
+        };
       }
       await shopRef.update(params);
     } catch (error) {
