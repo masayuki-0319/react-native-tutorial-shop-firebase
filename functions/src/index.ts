@@ -38,12 +38,12 @@ exports.onWriteReview = functions
     const { shopId } = context.params;
     const review = change.after.data() as Review;
     const db = admin.firestore();
-
     try {
       const shopRef = db.collection('shops').doc(shopId);
       const shopDoc = await shopRef.get();
       const shop = shopDoc.data() as Shop;
 
+      // 平均scoreの計算
       let { score1 = 0, score2 = 0, score3 = 0, score4 = 0, score5 = 0 } = shop;
       if (review.score === 1) {
         score1 += 1;
@@ -57,10 +57,11 @@ exports.onWriteReview = functions
         score5 += 1;
       }
       let aveScore =
-        (score1 * 1 + score2 * 2 + score3 * 3 + score4 * 4 + score5 * 5) /
+        (score1 + score2 * 2 + score3 * 3 + score4 * 4 + score5 * 5) /
         (score1 + score2 + score3 + score4 + score5);
       aveScore = Math.round(aveScore * 100) / 100;
 
+      // shopの更新
       let params = {};
       if (review.score === 1) {
         params = {
@@ -70,11 +71,6 @@ exports.onWriteReview = functions
       } else if (review.score === 2) {
         params = {
           score2: admin.firestore.FieldValue.increment(1),
-          score: aveScore,
-        };
-      } else if (review.score === 3) {
-        params = {
-          score3: admin.firestore.FieldValue.increment(1),
           score: aveScore,
         };
       } else if (review.score === 3) {
@@ -94,7 +90,7 @@ exports.onWriteReview = functions
         };
       }
       await shopRef.update(params);
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.log(err);
     }
   });
