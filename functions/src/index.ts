@@ -4,9 +4,9 @@ import { User } from './types/User';
 
 admin.initializeApp();
 
-export const onUpdateUser = functions
+exports.onUpdateUser = functions
   .region('asia-northeast1')
-  .firestore.document('users/{userUd}')
+  .firestore.document('users/{userId}')
   .onUpdate(async (change, context) => {
     const { userId } = context.params;
     const newUser = change.after.data() as User;
@@ -24,7 +24,7 @@ export const onUpdateUser = functions
         batch.update(reviewDoc.ref, { user });
       });
       await batch.commit();
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.log(err);
     }
   });
